@@ -1,4 +1,5 @@
+#!/bin/bash
 cmake -B build
 cd build
 make
-./NeverJudge
+QT_QPA_PLATFORM=xcb ./NeverJudge 

@@ -1,7 +1,7 @@
 #include "aiChat.h"
 
 // Initialize static instance pointer
-AIChatManager* AIChatManager::instance = nullptr;
+AIChatManager *AIChatManager::instance = nullptr;
 
 AIChatManager::AIChatManager(QObject *parent) : QObject(parent) {
     maxContextLength = 10; // Default: keep the last 10 messages as context
@@ -14,27 +14,13 @@ AIChatManager &AIChatManager::getInstance() {
     return *instance;
 }
 
-void AIChatManager::addUserMessage(const QString &content) {
-    AIMessage message(AIMessageType::USER, content);
+void AIChatManager::addMessage(AIMessageType type, const QString &content) {
+    AIMessage message(type, content);
     messages.append(message);
     emit messageAdded(message);
 }
 
-void AIChatManager::addAssistantMessage(const QString &content) {
-    AIMessage message(AIMessageType::ASSISTANT, content);
-    messages.append(message);
-    emit messageAdded(message);
-}
-
-void AIChatManager::addSystemMessage(const QString &content) {
-    AIMessage message(AIMessageType::SYSTEM, content);
-    messages.append(message);
-    emit messageAdded(message);
-}
-
-QList<AIMessage> AIChatManager::getMessages() const {
-    return messages;
-}
+QList<AIMessage> AIChatManager::getMessages() const { return messages; }
 
 QString AIChatManager::getContext(int maxTokens) const {
     QString context;
@@ -69,8 +55,4 @@ QString AIChatManager::getContext(int maxTokens) const {
     return context;
 }
 
-void AIChatManager::clearMessages() {
-    messages.clear();
-}
-
-
+void AIChatManager::clearMessages() { messages.clear(); }

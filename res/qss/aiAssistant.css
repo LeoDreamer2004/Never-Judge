@@ -1,18 +1,5 @@
 /* AI Assistant Widget Styles */
 
-/* Message role styles */
-.user-role {
-    color: #569CD6;
-    font-weight: bold;
-    font-size: large;
-}
-
-.assistant-role {
-    color: #C586C0;
-    font-weight: bold;
-    font-size: large;
-}
-
 /* Main widget background */
 #aiAssistantMainWidget {
     background-color: #1E1E1E;

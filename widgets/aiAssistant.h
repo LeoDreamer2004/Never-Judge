@@ -1,8 +1,7 @@
-#ifndef AIASSISTANTWIDGET_H
-#define AIASSISTANTWIDGET_H
+#ifndef AI_ASSISTANT_H
+#define AI_ASSISTANT_H
 
 #include <QApplication>
-#include <QCoro/Task>
 #include <QDockWidget>
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -20,6 +19,7 @@
 #include <QTextEdit>
 #include <QUrl>
 #include <QVBoxLayout>
+#include <qcorotask.h>
 #include "../ide/aiChat.h"
 #include "../web/aiClient.h"
 #include "../web/parse.h"
@@ -32,7 +32,7 @@ class AIAssistantWidget : public QDockWidget {
     Q_OBJECT
 
 public:
-    explicit AIAssistantWidget(CodeTabWidget* codeTab, QWidget *parent = nullptr);
+    explicit AIAssistantWidget(CodeTabWidget *codeTab, QWidget *parent = nullptr);
     ~AIAssistantWidget() override;
 
     void setUserCode(const QString &code) const;
@@ -41,38 +41,39 @@ public:
     void showCurrentProblemInfo();
 
 private slots:
-    void onSendClicked();
+    void onSendClicked() const;
     void onAnalyzeClicked();
     void onCodeClicked();
     void onDebugClicked();
-    void onClearClicked();
+    void onClearClicked() const;
     void onInsertCodeClicked();
     void onSetApiKeyClicked();
     void onShowProblemClicked();
     void onMessageAdded(const AIMessage &message);
     void onRequestCompleted(bool success, const QString &response);
-
+    void onTextChanged() const;
+    
+public:
     // Actively get problem information
     bool tryGetProblemInfo();
 
 private:
-    void setupUI();
+    void setup();
     void connectSignals();
     void displayMessage(const AIMessage &message);
-    void displayMarkdown(const QString &text, bool isUser);
+    void displayMarkdown(const QString &text, AIMessageType role);
     void setProgressVisible(bool visible) const;
     static QString extractCodeFromMarkdown(const QString &markdown);
     QString getCurrentCode() const;
-    void insertGeneratedCode(CodeTabWidget *codeTabWidget);
-    bool getProblemInfoFromPreview(OpenJudgePreviewWidget *preview);
-    QCoro::Task<bool> getProblemInfoFromUrl(const QUrl &url);
+    void insertGeneratedCode(const CodeTabWidget *codeTabWidget);
+    bool getProblemInfoFromPreview(const OpenJudgePreviewWidget *preview);
     QString getFullProblemDescription() const;
 
     // Helper function to send AI request
-    static void sendAIRequest(const QString &prompt, const QString &requestType);
+    void sendAIRequest(const QString &prompt, const QString &requestType) const;
 
     // Debug logging helper functions
-    static void logDebug(const QString &message) ;
+    static void logDebug(const QString &message);
     void logCurrentProblemInfo() const;
 
     // UI components
@@ -95,11 +96,11 @@ private:
     QProgressBar *progressBar = nullptr;
 
     // Data members
-    CodeTabWidget* m_codeTab = nullptr;
-    OJProblemDetail currentProblem;
+    CodeTabWidget *codeTab = nullptr;
+    OJProblemDetail problem;
     QString currentUserCode;
     QString generatedCode;
     QString historyMarkdown;
 };
 
-#endif // AIASSISTANTWIDGET_H
+#endif // AI_ASSISTANT_H

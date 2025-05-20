@@ -1,14 +1,14 @@
 #include "aiClient.h"
 
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QJsonArray>
 #include <QDebug>
+#include <QJsonArray>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 #include "../util/file.h"
 
 // Initialize static instance pointer
-AIClient* AIClient::instance = nullptr;
+AIClient *AIClient::instance = nullptr;
 
 AIClient::AIClient(QObject *parent) : QObject(parent) {
     apiEndpoint = "https://api.deepseek.com/v1/chat/completions";
@@ -27,9 +27,7 @@ void AIClient::setApiKey(const QString &key) {
     Configs::instance().set("aiAssistant.apiKey", key);
 }
 
-bool AIClient::hasApiKey() const {
-    return !apiKey.isEmpty();
-}
+bool AIClient::hasApiKey() const { return !apiKey.isEmpty(); }
 
 QJsonObject AIClient::buildRequestJson(const QString &prompt, int maxTokens, double temperature) {
     QJsonObject message;
@@ -40,7 +38,7 @@ QJsonObject AIClient::buildRequestJson(const QString &prompt, int maxTokens, dou
     messages.append(message);
 
     QJsonObject json;
-    json["model"] = "deepseek-coder";  // Using DeepSeek Coder model
+    json["model"] = "deepseek-coder"; // Using DeepSeek Coder model
     json["messages"] = messages;
     json["max_tokens"] = maxTokens;
     json["temperature"] = temperature;
@@ -48,11 +46,8 @@ QJsonObject AIClient::buildRequestJson(const QString &prompt, int maxTokens, dou
     return json;
 }
 
-QCoro::Task<std::expected<QString, QString>> AIClient::sendRequest(
-    const QString &prompt,
-    int maxTokens,
-    double temperature
-) {
+QCoro::Task<std::expected<QString, QString>>
+AIClient::sendRequest(const QString &prompt, int maxTokens, double temperature) {
     if (!hasApiKey()) {
         co_return std::unexpected("API key not set");
     }
@@ -103,11 +98,7 @@ QCoro::Task<std::expected<QString, QString>> AIClient::sendRequest(
     co_return responseText;
 }
 
-void AIClient::sendRequestSync(
-    const QString &prompt,
-    int maxTokens,
-    double temperature
-) {
+void AIClient::sendRequestSync(const QString &prompt, int maxTokens, double temperature) {
     if (!hasApiKey()) {
         emit requestCompleted(false, "API key not set");
         return;

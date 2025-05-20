@@ -11,6 +11,7 @@ struct ScriptResult {
     QString stdErr;
 
     static ScriptResult fail();
+    static ScriptResult ok(int exitCode, const QString &stdOut, const QString &stdErr);
 };
 
 QCoro::Task<ScriptResult> runPythonScript(QFile &script, QStringList args);

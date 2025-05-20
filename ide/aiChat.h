@@ -1,66 +1,56 @@
 #ifndef AICHAT_H
 #define AICHAT_H
 
+#include <QDateTime>
+#include <QList>
 #include <QObject>
 #include <QString>
-#include <QList>
-#include <QDateTime>
 
 // AI message type enum
 enum class AIMessageType {
-    USER,       // User message
-    ASSISTANT,  // AI assistant message
-    SYSTEM      // System message
+    USER, // User message
+    ASSISTANT, // AI assistant message
+    SYSTEM // System message
 };
 
 // AI message structure
 struct AIMessage {
-    AIMessageType type;    // Message type
-    QString content;       // Message content
-    QDateTime timestamp;   // Timestamp
+    AIMessageType type; // Message type
+    QString content; // Message content
+    QDateTime timestamp; // Timestamp
 
-    AIMessage(AIMessageType type, const QString &content)
-        : type(type), content(content), timestamp(QDateTime::currentDateTime()) {}
+    AIMessage(AIMessageType type, const QString &content) :
+        type(type), content(content), timestamp(QDateTime::currentDateTime()) {}
 };
 
 // AI chat manager class
 class AIChatManager : public QObject {
     Q_OBJECT
 
-private:
-    QList<AIMessage> messages;  // Chat history
-    int maxContextLength;       // Maximum context length
+    QList<AIMessage> messages; // Chat history
+    int maxContextLength; // Maximum context length
 
     // Singleton pattern
     explicit AIChatManager(QObject *parent = nullptr);
     static AIChatManager *instance;
 
 public:
-    // Get AIChatManager singleton instance
     static AIChatManager &getInstance();
 
-    // Add user message
-    void addUserMessage(const QString &content);
+    /** Add a message to the manager */
+    void addMessage(AIMessageType type, const QString &content);
 
-    // Add assistant message
-    void addAssistantMessage(const QString &content);
-
-    // Add system message
-    void addSystemMessage(const QString &content);
-
-    // Get complete chat history
+    /** Get complete chat history */
     QList<AIMessage> getMessages() const;
 
-    // Get current context
+    /** Get current context */
     QString getContext(int maxTokens = 4096) const;
 
-    // Clear chat history
+    /** Clear chat history */
     void clearMessages();
 
-
-
 signals:
-    // Message added signal
+    /** Message added signal */
     void messageAdded(const AIMessage &message);
 };
 

@@ -6,6 +6,9 @@
 #include "file.h"
 
 ScriptResult ScriptResult::fail() { return {false}; }
+ScriptResult ScriptResult::ok(int exitCode, const QString &stdOut, const QString &stdErr) {
+    return {true, exitCode, stdOut, stdErr};
+}
 
 QCoro::Task<ScriptResult> runPythonScript(QFile &script, QStringList args) {
     if (!script.open(QIODevice::ReadOnly)) {
@@ -29,5 +32,5 @@ QCoro::Task<ScriptResult> runPythonScript(QFile &script, QStringList args) {
     QString stdOut = process.readAllStandardOutput();
     QString stdErr = process.readAllStandardError();
     int exitCode = process.exitCode();
-    co_return {true, exitCode, stdOut, stdErr};
+    co_return ScriptResult::ok(exitCode, stdOut, stdErr);
 }

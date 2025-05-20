@@ -85,14 +85,13 @@ void IDEMainWindow::connectSignals() {
     // Connect AI Assistant toggle button
     connect(rightNav, &RightIconNavigateWidget::toggleAIAssistant, aiAssistant, &AIAssistantWidget::setVisible);
 
-    // --- Connect OJ Preview Change to AI Assistant ---
-    // We'll implement this later when we have proper access to the preview widget
-    // For now, we'll comment it out to allow compilation
-    /*
+    // Connect OJ Preview Change to AI Assistant - 确保AI窗口会随着新下载的问题更新而更新
     connect(ojPreview, &OpenJudgePreviewWidget::currentIndexChanged, this, [this]() {
-        // This code needs to be refactored to work with the current API
+        // 当预览窗口的当前题目发生变化时，尝试更新AI窗口的问题信息
+        if (aiAssistant->isVisible()) {
+            aiAssistant->tryGetProblemInfo();
+        }
     });
-    */
 
     // File system
     connect(menuBar, &MenuBarWidget::newFile, fileTree,
